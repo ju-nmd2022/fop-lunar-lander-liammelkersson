@@ -48,8 +48,8 @@ function mars() {
 
 const marsRocks = [];
 const marsRockSettings = {
-  amount: 500,
-  maxSize: 7,
+  amount: 1000,
+  maxSize: 6,
 };
 
 for (let i = 0; i < marsRockSettings.amount; i++) {
@@ -57,7 +57,7 @@ for (let i = 0; i < marsRockSettings.amount; i++) {
     x: Math.floor(Math.random() * width),
     y: 420 + Math.floor(Math.random() * height),
     size: Math.floor(Math.random() * marsRockSettings.maxSize),
-    //alpha: Math.random(),
+    windSpeed: 0.5,
   };
   marsRocks.push(marsRock);
 }
@@ -243,6 +243,11 @@ function draw() {
   for (let marsRock of marsRocks) {
     fill(123, 65, 40);
     ellipse(marsRock.x, marsRock.y, marsRock.size);
+    marsRock.x = marsRock.x + marsRock.windSpeed;
+
+    if (marsRock.x > width) {
+      marsRock.x = 0;
+    }
   }
 
   //Rocket
