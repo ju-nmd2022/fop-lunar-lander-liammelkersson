@@ -214,11 +214,39 @@ function rocket(x, y, s) {
 }
 
 //------Particles
+let particles = [];
 
-//------Fuel system
+function createParticle(x, y) {
+  const v = 0.2 + Math.random();
+  const a = Math.random() * 2 * Math.PI;
+  const maxLife = 10 + Math.floor(Math.random() * 10);
+  return { x: x, y: y, velocity: v, angle: a, life: 0, maxLife: maxLife };
+}
 
-//------Data (text)
-//
+function drawParticle(particle) {
+  push();
+  translate(particle.x, particle.y);
+  noStroke();
+  fill(150, 150, 255);
+  ellipse(0, 0, 3);
+  pop();
+}
+
+function updateParticle(particle) {
+  particle.x = particle.x + Math.cos(particle.angle) * particle.velocity;
+  particle.y = particle.y + Math.sin(particle.angle) * particle.velocity;
+  particle.velocity = particle.velocity * 0.99;
+  particle.life = particle.life + 1;
+
+  if (particle.life > particle.maxLife) {
+    const particleIndex = particles.indexOf(particle);
+    particles.splice(particleIndex, 1);
+  }
+}
+
+//------Fuel
+let fuel = 100;
+
 //
 //
 //
@@ -237,6 +265,16 @@ function draw() {
     star.alpha = star.alpha + alphaSpeed;
   }
 
+  //Data text
+  push();
+  fill(255, 255, 255);
+  textSize(16);
+  textFont();
+  text("fuel: " + fuel, 50, 50);
+  text("velocity: " + Math.floor(rocketSettings.velocity * 10), 50, 75);
+  //text("altitude: " + Math.floor(rocketSettings.y), 50, 100);
+  pop();
+
   //Mars Surface
   mars();
 
@@ -250,15 +288,12 @@ function draw() {
     }
   }
 
-  //Rocket
-  rocket(
-    rocketSettings.x - 40 * rocketSettings.size,
-    // ^^^^ 40 * size is so that the rocket is
-    // ---- centered 40 is the width of size = 1
-    rocketSettings.y,
-    rocketSettings.size
-  );
+  for (let particle of particles) {
+    drawParticle(particle);
+    updateParticle(particle);
+  }
 
+  //GAME MECHANICS
   if (isGameActive) {
     //gravity
     rocketSettings.y = rocketSettings.y + rocketSettings.velocity;
@@ -274,12 +309,24 @@ function draw() {
 
     if (keyIsDown(38)) {
       //arrowUp
-      //rocketSettings.y = rocketSettings.y - thrustVelocity;
       rocketSettings.velocity = rocketSettings.velocity - 0.4;
-      //thrustVelocity = thrustVelocity + thrustAcceleration;
       console.log(rocketSettings.y);
-      //rocketSettings.acceleration = 0;
       console.log(rocketSettings.acceleration);
+      fuel = fuel - 2;
+
+      //particles
+      for (let i = 0; i < 200; i++) {
+        let particle = createParticle(rocketSettings.x, rocketSettings.y + 125);
+        particles.push(particle);
+      }
     }
   }
+  //Rocket
+  rocket(
+    rocketSettings.x - 40 * rocketSettings.size,
+    // ^^^^ 40 * size is so that the rocket is
+    // ---- centered 40 is the width of size = 1
+    rocketSettings.y,
+    rocketSettings.size
+  );
 }
