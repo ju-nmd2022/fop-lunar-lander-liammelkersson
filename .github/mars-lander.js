@@ -268,5 +268,18 @@ function draw() {
     if (rocketSettings.y > 350) {
       isGameActive = false;
     }
+    //Thrust
+    let thrustVelocity = 4;
+    //let thrustAcceleration = 5;
+
+    if (keyIsDown(38)) {
+      //arrowUp
+      //rocketSettings.y = rocketSettings.y - thrustVelocity;
+      rocketSettings.velocity = rocketSettings.velocity - 0.4;
+      //thrustVelocity = thrustVelocity + thrustAcceleration;
+      console.log(rocketSettings.y);
+      //rocketSettings.acceleration = 0;
+      console.log(rocketSettings.acceleration);
+    }
   }
 }
