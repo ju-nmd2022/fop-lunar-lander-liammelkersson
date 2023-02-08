@@ -3,6 +3,9 @@
 // for an assignment in the course Foundations of Programming.
 // Liam Melkersson. Jönköping University. 2023.
 
+//----- General game variables
+let isGameActive = true;
+
 //-----Starry sky
 //      (inspired by Garrit's starry sky at:
 //      https://pixelkind.github.io/foundationsofprogramming//programming/15-07-example)
@@ -26,7 +29,7 @@ for (let i = 0; i < starSettings.amount; i++) {
 //-----Mars surface
 const marsSettings = {
   x: 0,
-  y: width - width / 7,
+  y: 420,
   marsWidth: width,
   marsHeight: height,
   color: "#ad6242",
@@ -52,7 +55,7 @@ const marsRockSettings = {
 for (let i = 0; i < marsRockSettings.amount; i++) {
   const marsRock = {
     x: Math.floor(Math.random() * width),
-    y: 450 + Math.floor(Math.random() * height),
+    y: 420 + Math.floor(Math.random() * height),
     size: Math.floor(Math.random() * marsRockSettings.maxSize),
     //alpha: Math.random(),
   };
@@ -62,10 +65,10 @@ for (let i = 0; i < marsRockSettings.amount; i++) {
 //------Rocket
 let rocketSettings = {
   x: width / 2,
-  y: 100,
+  y: 50,
   size: 0.7,
-  // velocity:
-  // acceleration:
+  velocity: 0.5,
+  acceleration: 0.16,
 };
 
 function rocket(x, y, s) {
@@ -250,4 +253,15 @@ function draw() {
     rocketSettings.y,
     rocketSettings.size
   );
+
+  if (isGameActive) {
+    //gravity
+    rocketSettings.y = rocketSettings.y + rocketSettings.velocity;
+    rocketSettings.velocity =
+      rocketSettings.velocity + rocketSettings.acceleration;
+    //ground stops rocket
+    if (rocketSettings.y > 350) {
+      isGameActive = false;
+    }
+  }
 }
