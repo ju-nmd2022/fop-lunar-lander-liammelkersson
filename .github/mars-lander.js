@@ -52,7 +52,7 @@ const marsRockSettings = {
 for (let i = 0; i < marsRockSettings.amount; i++) {
   const marsRock = {
     x: Math.floor(Math.random() * width),
-    y: 420 + Math.floor(Math.random() * height),
+    y: 450 + Math.floor(Math.random() * height),
     size: Math.floor(Math.random() * marsRockSettings.maxSize),
     //alpha: Math.random(),
   };
@@ -60,152 +60,153 @@ for (let i = 0; i < marsRockSettings.amount; i++) {
 }
 
 //------Rocket
-// let rocketSettings = {
-// x:
-// y:
-// velocity:
-// acceleration:
-// }
+let rocketSettings = {
+  x: width / 2,
+  y: 100,
+  size: 0.7,
+  // velocity:
+  // acceleration:
+};
 
-function rocket(x, y) {
+function rocket(x, y, s) {
   noStroke();
   translate(x, y);
 
   push();
   //light grey parts
   fill(189, 189, 189);
-  rect(5, 40, 10, 95);
-  rect(10, 30, 5, 95);
-  rect(60, 30, 5, 95);
+  rect(5 * s, 40 * s, 10 * s, 95 * s);
+  rect(10 * s, 30 * s, 5 * s, 95 * s);
+  rect(60 * s, 30 * s, 5 * s, 95 * s);
   pop();
 
   push();
   fill(45, 45, 45);
   //left-wing
-  rect(0, 135, 5, 15);
-  rect(5, 130, 5, 5);
-  rect(10, 125, 5, 5);
-  rect(15, 120, 5, 5);
-  rect(20, 105, 5, 15);
+  rect(0 * s, 135 * s, 5 * s, 15 * s);
+  rect(5 * s, 130 * s, 5 * s, 5 * s);
+  rect(10 * s, 125 * s, 5 * s, 5 * s);
+  rect(15 * s, 120 * s, 5 * s, 5 * s);
+  rect(20 * s, 105 * s, 5 * s, 15 * s);
 
   //right-wing
-  rect(55, 105, 5, 15);
-  rect(60, 120, 5, 5);
-  rect(65, 125, 5, 5);
-  rect(70, 130, 5, 5);
-  rect(75, 135, 5, 15);
+  rect(55 * s, 105 * s, 5 * s, 15 * s);
+  rect(60 * s, 120 * s, 5 * s, 5 * s);
+  rect(65 * s, 125 * s, 5 * s, 5 * s);
+  rect(70 * s, 130 * s, 5 * s, 5 * s);
+  rect(75 * s, 135 * s, 5 * s, 15 * s);
   //thrusters
-  rect(20, 155, 5, 5);
-  rect(25, 155, 10, 10);
-  rect(30, 160, 25, 5);
-  rect(45, 155, 10, 10);
-  rect(55, 155, 5, 5);
+  rect(20 * s, 155 * s, 5 * s, 5 * s);
+  rect(25 * s, 155 * s, 10 * s, 10 * s);
+  rect(30 * s, 160 * s, 25 * s, 5 * s);
+  rect(45 * s, 155 * s, 10 * s, 10 * s);
+  rect(55 * s, 155 * s, 5 * s, 5 * s);
 
   //nose
-  rect(35, 45, 10, 10);
+  rect(35 * s, 45 * s, 10 * s, 10 * s);
 
   //legs
-  rect(15, 160, 5, 5);
-  rect(10, 165, 5, 5);
-  rect(10, 170, 5, 5);
-  rect(60, 160, 5, 5);
-  rect(65, 165, 5, 5);
-  rect(65, 170, 5, 5);
+  rect(15 * s, 160 * s, 5 * s, 5 * s);
+  rect(10 * s, 165 * s, 5 * s, 5 * s);
+  rect(10 * s, 170 * s, 5 * s, 5 * s);
+  rect(60 * s, 160 * s, 5 * s, 5 * s);
+  rect(65 * s, 165 * s, 5 * s, 5 * s);
+  rect(65 * s, 170 * s, 5 * s, 5 * s);
   pop();
 
   //orange parts
   push();
   fill(148, 97, 82);
-  rect(30, 45, 5, 10);
-  rect(45, 45, 5, 10);
-  rect(25, 50, 5, 45);
-  rect(50, 50, 5, 45);
+  rect(30 * s, 45 * s, 5 * s, 10 * s);
+  rect(45 * s, 45 * s, 5 * s, 10 * s);
+  rect(25 * s, 50 * s, 5 * s, 45 * s);
+  rect(50 * s, 50 * s, 5 * s, 45 * s);
   pop();
 
   push();
   fill(178, 98, 63);
-  rect(25, 35, 5, 15);
-  rect(30, 30, 5, 15);
-  rect(35, 30, 5, 15);
-  rect(40, 30, 5, 15);
-  rect(45, 30, 5, 15);
-  rect(50, 35, 5, 15);
+  rect(25 * s, 35 * s, 5 * s, 15 * s);
+  rect(30 * s, 30 * s, 5 * s, 15 * s);
+  rect(35 * s, 30 * s, 5 * s, 15 * s);
+  rect(40 * s, 30 * s, 5 * s, 15 * s);
+  rect(45 * s, 30 * s, 5 * s, 15);
+  rect(50 * s, 35 * s, 5 * s, 15 * s);
 
-  rect(30, 15, 25, 20);
-  rect(30, 5, 20, 20);
+  rect(30 * s, 15 * s, 25 * s, 20 * s);
+  rect(30 * s, 5 * s, 20 * s, 20 * s);
   pop();
 
   //body
   push();
   fill(224, 224, 224);
-  rect(30, 55, 20, 100);
-  rect(25, 95, 30, 60);
-  rect(20, 120, 40, 35);
-  rect(5, 135, 70, 10);
-  rect(10, 130, 60, 5);
-  rect(15, 125, 50, 5);
-  rect(35, 155, 10, 5);
+  rect(30 * s, 55 * s, 20 * s, 100 * s);
+  rect(25 * s, 95 * s, 30 * s, 60 * s);
+  rect(20 * s, 120 * s, 40 * s, 35 * s);
+  rect(5 * s, 135 * s, 70 * s, 10 * s);
+  rect(10 * s, 130 * s, 60 * s, 5 * s);
+  rect(15 * s, 125 * s, 50 * s, 5 * s);
+  rect(35 * s, 155 * s, 10 * s, 5 * s);
   pop();
 
   //window
   push();
   fill(45, 45, 45);
-  rect(35, 60, 10, 5);
+  rect(35 * s, 60 * s, 10 * s, 5 * s);
   pop();
 
   //dark grey
   push();
   fill(97, 97, 97);
-  rect(5, 145, 15, 5);
-  rect(60, 145, 15, 5);
-  rect(20, 150, 5, 5);
-  rect(55, 150, 5, 5);
+  rect(5 * s, 145 * s, 15 * s, 5 * s);
+  rect(60 * s, 145 * s, 15 * s, 5 * s);
+  rect(20 * s, 150 * s, 5 * s, 5 * s);
+  rect(55 * s, 150 * s, 5 * s, 5 * s);
 
-  rect(15, 30, 5, 90);
-  rect(20, 40, 5, 65);
+  rect(15 * s, 30 * s, 5 * s, 90 * s);
+  rect(20 * s, 40 * s, 5 * s, 65 * s);
 
-  rect(55, 40, 5, 65);
-  rect(65, 30, 5, 95);
-  rect(70, 40, 5, 90);
+  rect(55 * s, 40 * s, 5 * s, 65 * s);
+  rect(65 * s, 30 * s, 5 * s, 95 * s);
+  rect(70 * s, 40 * s, 5 * s, 90 * s);
   pop();
 
   //big tank nose
   push();
-  fill(109, 77, 66);
-  rect(25, 15, 5, 20);
-  rect(30, 5, 5, 10);
-  rect(35, 0, 10, 5);
-  rect(45, 5, 5, 10);
-  rect(50, 15, 5, 20);
+  fill(109 * s, 77 * s, 66 * s);
+  rect(25 * s, 15 * s, 5 * s, 20 * s);
+  rect(30 * s, 5 * s, 5 * s, 10 * s);
+  rect(35 * s, 0 * s, 10 * s, 5 * s);
+  rect(45 * s, 5 * s, 5 * s, 10 * s);
+  rect(50 * s, 15 * s, 5 * s, 20 * s);
   pop();
 
   //highlights
   push();
   fill(255, 255, 255);
-  rect(10, 40, 5, 5);
-  rect(10, 50, 5, 15);
-  rect(30, 15, 5, 10);
-  rect(30, 35, 5, 10);
-  rect(35, 5, 5, 5);
-  rect(35, 55, 5, 5);
-  rect(35, 65, 5, 10);
-  rect(60, 40, 5, 5);
-  rect(60, 60, 5, 15);
+  rect(10 * s, 40 * s, 5 * s, 5 * s);
+  rect(10 * s, 50 * s, 5 * s, 15 * s);
+  rect(30 * s, 15 * s, 5 * s, 10 * s);
+  rect(30 * s, 35 * s, 5 * s, 10 * s);
+  rect(35 * s, 5 * s, 5 * s, 5 * s);
+  rect(35 * s, 55 * s, 5 * s, 5 * s);
+  rect(35 * s, 65 * s, 5 * s, 10 * s);
+  rect(60 * s, 40 * s, 5 * s, 5 * s);
+  rect(60 * s, 60 * s, 5 * s, 15 * s);
   pop();
 
   //U.S flag and nasa logo
   push();
   fill(170, 85, 94);
-  rect(55, 140, 15, 5);
-  rect(60, 135, 5, 5);
+  rect(55 * s, 140 * s, 15 * s, 5 * s);
+  rect(60 * s, 135 * s, 5 * s, 5 * s);
   pop();
 
   push();
   fill(69, 92, 162);
-  rect(55, 135, 5, 5);
+  rect(55 * s, 135 * s, 5 * s, 5 * s);
 
-  rect(20, 135, 5, 10);
-  rect(15, 140, 5, 5);
+  rect(20 * s, 135 * s, 5 * s, 10 * s);
+  rect(15 * s, 140 * s, 5 * s, 5 * s);
   pop();
 }
 
@@ -240,5 +241,13 @@ function draw() {
     fill(123, 65, 40);
     ellipse(marsRock.x, marsRock.y, marsRock.size);
   }
-  rocket(width / 2, 100);
+
+  //Rocket
+  rocket(
+    rocketSettings.x - 40 * rocketSettings.size,
+    // ^^^^ 40 * size is so that the rocket is
+    // ---- centered 40 is the width of size = 1
+    rocketSettings.y,
+    rocketSettings.size
+  );
 }
