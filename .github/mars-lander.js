@@ -3,8 +3,13 @@
 // for an assignment in the course Foundations of Programming.
 // Liam Melkersson. Jönköping University. 2023.
 
-//----- General game variables
+//----- General game variables & game states
 let isGameActive = true;
+let gameState = 0;
+// game state 0 = menu
+// game state 1 = gameplay
+// game state 2 = game over
+// game state 3 = win
 
 //-----Starry sky
 //      (inspired by Garrit's starry sky at:
@@ -251,106 +256,185 @@ function updateParticle(particle) {
 //------Fuel
 let fuel = 150;
 
+//------Game Over
+
 //
 //
 //
 
 //DRAW FUNCTION
 function draw() {
-  //Starry Sky
-  noStroke();
-  background(0, 0, 0);
+  //game states
+  if (gameState == 0) {
+    console.log("menu");
+    //menu
 
-  for (let star of stars) {
-    let alphaSpeed = 0.03;
+    //Starry Sky
+    noStroke();
+    background(0, 0, 0);
 
-    fill(255, 255, 255, Math.abs(Math.sin(star.alpha) * 255));
-    ellipse(star.x, star.y, star.size);
-    star.alpha = star.alpha + alphaSpeed;
-  }
+    for (let star of stars) {
+      let alphaSpeed = 0.03;
 
-  //Data text
-  push();
-  fill(255, 255, 255);
-  textSize(16);
-  textFont();
-  //fuel
-  text("fuel: " + Math.floor(fuel / 1.5) + "%", 50, 50);
-  //velocity
-  text(
-    "velocity: " + Math.floor(rocketSettings.velocity * 20) + "km/h",
-    50,
-    75
-  );
-  //text("altitude: " + Math.floor(rocketSettings.y), 50, 100);
-  pop();
-
-  //Mars Surface
-  mars();
-
-  for (let marsRock of marsRocks) {
-    fill(123, 65, 40);
-    ellipse(marsRock.x, marsRock.y, marsRock.size);
-    marsRock.x = marsRock.x + marsRock.windSpeed;
-
-    if (marsRock.x > width) {
-      marsRock.x = 0;
+      fill(255, 255, 255, Math.abs(Math.sin(star.alpha) * 255));
+      ellipse(star.x, star.y, star.size);
+      star.alpha = star.alpha + alphaSpeed;
     }
-  }
 
-  for (let particle of particles) {
-    drawParticle(particle);
-    updateParticle(particle);
-  }
-  //mars mountains
-  triangle(0, 430, 0, 360, 180, 430);
-  triangle(width, 440, width, 360, 350, 440);
+    //Game text
+    push();
+    fill(255, 255, 255);
+    textSize(50);
+    textFont();
+    textAlign(CENTER);
+    text("MARS LANDER", width / 2, height / 3);
+    pop();
 
-  //shadow
-  push();
-  fill(0, 0, 0, 20);
-  ellipse(
-    rocketSettings.x,
-    475,
-    80 * (rocketSettings.y / 320),
-    30 * (rocketSettings.y / 320)
-  );
-  pop();
+    //press any button to start game
+    push();
+    fill(255, 255, 255);
+    textSize(16);
+    textFont();
+    textAlign(CENTER);
+    text("press spacebar to start game", width / 2, height / 3 + 35);
+    pop();
 
-  //GAME MECHANICS
-  if (isGameActive) {
-    //gravity
-    rocketSettings.y = rocketSettings.y + rocketSettings.velocity;
-    rocketSettings.velocity =
-      rocketSettings.velocity + rocketSettings.acceleration;
-    //ground stops rocket
-    if (rocketSettings.y > 350) {
-      isGameActive = false;
-    }
-    //Thrust mechanic
-    let thrustVelocity = 4;
-    //let thrustAcceleration = 5;
+    //controls
+    push();
+    fill(255, 255, 255);
+    textSize(12);
+    textFont();
+    textAlign(CENTER);
+    text("controls: arrow up to thurst & spacebar to restart", width / 2, 35);
+    pop();
 
-    if (keyIsDown(38)) {
-      //arrowUp = thurst
-      rocketSettings.velocity = rocketSettings.velocity - 0.4;
-      console.log(rocketSettings.y);
-      console.log(rocketSettings.acceleration);
-      fuel = fuel - 2;
+    //Mars Surface
+    mars();
 
-      //particles
-      for (let i = 0; i < 200; i++) {
-        let particle = createParticle(rocketSettings.x, rocketSettings.y + 125);
-        particles.push(particle);
+    for (let marsRock of marsRocks) {
+      fill(123, 65, 40);
+      ellipse(marsRock.x, marsRock.y, marsRock.size);
+      marsRock.x = marsRock.x + marsRock.windSpeed;
+
+      if (marsRock.x > width) {
+        marsRock.x = 0;
       }
     }
+
+    for (let particle of particles) {
+      drawParticle(particle);
+      updateParticle(particle);
+    }
+    //mars mountains
+    triangle(0, 430, 0, 360, 180, 430);
+    triangle(width, 440, width, 360, 350, 440);
+
+    if (keyIsDown(32) && gameState == 0) {
+      gameState = 1;
+    }
+  } else if (gameState == 1) {
+    //gameplay
+    //Starry Sky
+    noStroke();
+    background(0, 0, 0);
+
+    for (let star of stars) {
+      let alphaSpeed = 0.03;
+
+      fill(255, 255, 255, Math.abs(Math.sin(star.alpha) * 255));
+      ellipse(star.x, star.y, star.size);
+      star.alpha = star.alpha + alphaSpeed;
+    }
+
+    //Data text
+    push();
+    fill(255, 255, 255);
+    textSize(16);
+    textFont();
+    //fuel
+    text("fuel: " + Math.floor(fuel / 1.5) + "%", 50, 50);
+    //velocity
+    text(
+      "velocity: " + Math.floor(rocketSettings.velocity * 20) + "km/h",
+      50,
+      75
+    );
+    //text("altitude: " + Math.floor(rocketSettings.y), 50, 100);
+    pop();
+
+    //Mars Surface
+    mars();
+
+    for (let marsRock of marsRocks) {
+      fill(123, 65, 40);
+      ellipse(marsRock.x, marsRock.y, marsRock.size);
+      marsRock.x = marsRock.x + marsRock.windSpeed;
+
+      if (marsRock.x > width) {
+        marsRock.x = 0;
+      }
+    }
+
+    for (let particle of particles) {
+      drawParticle(particle);
+      updateParticle(particle);
+    }
+    //mars mountains
+    triangle(0, 430, 0, 360, 180, 430);
+    triangle(width, 440, width, 360, 350, 440);
+
+    //shadow
+    push();
+    fill(0, 0, 0, 20);
+    ellipse(
+      rocketSettings.x,
+      475,
+      80 * (rocketSettings.y / 320),
+      30 * (rocketSettings.y / 320)
+    );
+    pop();
+
+    //GAME MECHANICS
+    if (isGameActive) {
+      //gravity
+      rocketSettings.y = rocketSettings.y + rocketSettings.velocity;
+      rocketSettings.velocity =
+        rocketSettings.velocity + rocketSettings.acceleration;
+      //ground stops rocket
+      if (rocketSettings.y > 350) {
+        isGameActive = false;
+      }
+      //Thrust mechanic
+      let thrustVelocity = 4;
+      //let thrustAcceleration = 5;
+
+      if (keyIsDown(38)) {
+        //arrowUp = thurst
+        rocketSettings.velocity = rocketSettings.velocity - 0.4;
+        console.log(rocketSettings.y);
+        console.log(rocketSettings.acceleration);
+        fuel = fuel - 2;
+
+        //particles
+        for (let i = 0; i < 200; i++) {
+          let particle = createParticle(
+            rocketSettings.x,
+            rocketSettings.y + 125
+          );
+          particles.push(particle);
+        }
+      }
+    }
+    //Rocket
+    rocket(
+      rocketSettings.x - 40 * rocketSettings.size,
+      // ^^^^ 40 * size is so that the rocket is
+      // ---- centered 40 is the width of size = 1
+      rocketSettings.y,
+      rocketSettings.size
+    );
+  } else if (gameState == 2) {
+    //win
   }
-  //Rocket
-  rocket(
-    rocketSettings.x - 40 * rocketSettings.size,
-    // ^^^^ 40 * size is so that the rocket is
-    // ---- centered 40 is the width of size = 1
-    rocketSettings.y,
-    rocketSettings.size
-  );
+  console.log(gameState);
 }
