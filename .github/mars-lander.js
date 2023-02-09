@@ -44,12 +44,15 @@ function mars() {
     marsSettings.marsWidth,
     marsSettings.marsHeight
   );
+  fill("#a45820");
+  //   triangle(0, 420, 0, 360, 180, 420);
+  //   triangle(width, 430, width, 360, 350, 430);
 }
 
 const marsRocks = [];
 const marsRockSettings = {
-  amount: 1000,
-  maxSize: 6,
+  amount: 2000,
+  maxSize: 4,
 };
 
 for (let i = 0; i < marsRockSettings.amount; i++) {
@@ -214,6 +217,7 @@ function rocket(x, y, s) {
 }
 
 //------Particles
+//          Based on the one from garrit's lecture
 let particles = [];
 
 function createParticle(x, y) {
@@ -228,7 +232,7 @@ function drawParticle(particle) {
   translate(particle.x, particle.y);
   noStroke();
   fill(150, 150, 255);
-  ellipse(0, 0, 3);
+  rect(0, 0, 5);
   pop();
 }
 
@@ -245,7 +249,7 @@ function updateParticle(particle) {
 }
 
 //------Fuel
-let fuel = 100;
+let fuel = 150;
 
 //
 //
@@ -270,8 +274,14 @@ function draw() {
   fill(255, 255, 255);
   textSize(16);
   textFont();
-  text("fuel: " + fuel, 50, 50);
-  text("velocity: " + Math.floor(rocketSettings.velocity * 10), 50, 75);
+  //fuel
+  text("fuel: " + Math.floor(fuel / 1.5) + "%", 50, 50);
+  //velocity
+  text(
+    "velocity: " + Math.floor(rocketSettings.velocity * 20) + "km/h",
+    50,
+    75
+  );
   //text("altitude: " + Math.floor(rocketSettings.y), 50, 100);
   pop();
 
@@ -292,6 +302,20 @@ function draw() {
     drawParticle(particle);
     updateParticle(particle);
   }
+  //mars mountains
+  triangle(0, 430, 0, 360, 180, 430);
+  triangle(width, 440, width, 360, 350, 440);
+
+  //shadow
+  push();
+  fill(0, 0, 0, 20);
+  ellipse(
+    rocketSettings.x,
+    475,
+    80 * (rocketSettings.y / 320),
+    30 * (rocketSettings.y / 320)
+  );
+  pop();
 
   //GAME MECHANICS
   if (isGameActive) {
@@ -303,12 +327,12 @@ function draw() {
     if (rocketSettings.y > 350) {
       isGameActive = false;
     }
-    //Thrust
+    //Thrust mechanic
     let thrustVelocity = 4;
     //let thrustAcceleration = 5;
 
     if (keyIsDown(38)) {
-      //arrowUp
+      //arrowUp = thurst
       rocketSettings.velocity = rocketSettings.velocity - 0.4;
       console.log(rocketSettings.y);
       console.log(rocketSettings.acceleration);
