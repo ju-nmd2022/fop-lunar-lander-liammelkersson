@@ -5,11 +5,9 @@
 
 //----- General game variables & game states
 let isGameActive = true;
-let gameState = 0;
-// game state 0 = menu
-// game state 1 = gameplay
-// game state 2 = game over
-// game state 3 = win
+let gameState = "start";
+let result;
+let rocketLanded;
 
 //-----Starry sky
 //      (inspired by Garrit's starry sky at:
@@ -257,7 +255,27 @@ function updateParticle(particle) {
 let fuel = 150;
 
 //------Game Over
+function gameOver() {
+  push();
+  translate(0, 0);
+  fill(255, 255, 255);
+  textSize(50);
+  textFont();
+  textAlign(CENTER);
+  text("GAME OVER", width / 2, height / 3);
+  pop();
+}
 
+//------Game won
+function gameWon() {
+  push();
+  fill(255, 255, 255);
+  textSize(50);
+  textFont();
+  textAlign(CENTER);
+  text("YOU LANDED!", width / 2, height / 3);
+  pop();
+}
 //
 //
 //
@@ -265,10 +283,7 @@ let fuel = 150;
 //DRAW FUNCTION
 function draw() {
   //game states
-  if (gameState == 0) {
-    console.log("menu");
-    //menu
-
+  if (gameState === "start") {
     //Starry Sky
     noStroke();
     background(0, 0, 0);
@@ -290,22 +305,31 @@ function draw() {
     text("MARS LANDER", width / 2, height / 3);
     pop();
 
-    //press any button to start game
+    //Instructions
     push();
     fill(255, 255, 255);
     textSize(16);
     textFont();
     textAlign(CENTER);
     text("press spacebar to start game", width / 2, height / 3 + 35);
-    pop();
 
-    //controls
-    push();
-    fill(255, 255, 255);
-    textSize(12);
-    textFont();
-    textAlign(CENTER);
-    text("controls: arrow up to thurst & spacebar to restart", width / 2, 35);
+    fill(200, 200, 200);
+    textSize(10);
+    text(
+      "you have to land with an impact velocity of max 30km/h",
+      width / 2,
+      height / 3 + 160
+    );
+    text(
+      "don't run out of fuel, or the rocket will explode",
+      width / 2,
+      height / 3 + 175
+    );
+    text(
+      "controls: arrow-up = thrust, spacebar = restart",
+      width / 2,
+      height / 3 + 190
+    );
     pop();
 
     //Mars Surface
@@ -329,10 +353,10 @@ function draw() {
     triangle(0, 430, 0, 360, 180, 430);
     triangle(width, 440, width, 360, 350, 440);
 
-    if (keyIsDown(32) && gameState == 0) {
-      gameState = 1;
+    if (keyIsPressed === true && keyCode === 32) {
+      gameState = "gameplay";
     }
-  } else if (gameState == 1) {
+  } else if (gameState === "gameplay") {
     //gameplay
     //Starry Sky
     noStroke();
@@ -401,8 +425,19 @@ function draw() {
       rocketSettings.velocity =
         rocketSettings.velocity + rocketSettings.acceleration;
       //ground stops rocket
-      if (rocketSettings.y > 350) {
+      if (rocketSettings.y > 350 && rocketSettings.velocity > 1.5) {
+        gameOver();
+        result = "too bad, you crashed";
+        //EXPLOSION EFFECT
+        rocketLanded = false;
         isGameActive = false;
+        gameState = "end";
+      } else if (rocketSettings.y > 350 && rocketSettings.velocity <= 1.5) {
+        gameWon();
+        result = "great! you landed safely";
+        rocketLanded = true;
+        isGameActive = false;
+        gameState = "end";
       }
       //Thrust mechanic
       let thrustVelocity = 4;
@@ -433,8 +468,96 @@ function draw() {
       rocketSettings.y,
       rocketSettings.size
     );
-  } else if (gameState == 2) {
-    //win
+
+    if (fuel === 0) {
+      rocketLanded = false;
+      gameState = "end";
+      isGameActive = false;
+      result = "you had no fuel left, the rocket exploded :(";
+      //EXPLOSION EFFECT
+    }
+  } else if (gameState === "end") {
+    //Starry Sky
+    noStroke();
+    background(0, 0, 0);
+
+    for (let star of stars) {
+      let alphaSpeed = 0.03;
+
+      fill(255, 255, 255, Math.abs(Math.sin(star.alpha) * 255));
+      ellipse(star.x, star.y, star.size);
+      star.alpha = star.alpha + alphaSpeed;
+    }
+
+    //Game text
+    push();
+    fill(255, 255, 255);
+    textSize(50);
+    textFont();
+    textAlign(CENTER);
+    text("MARS LANDER", width / 2, height / 3);
+    pop();
+
+    //press any button to start game
+    push();
+    fill(255, 255, 255);
+    textSize(16);
+    textFont();
+    textAlign(CENTER);
+    text(result, width / 2, height / 3 + 35);
+    pop();
+
+    //controls
+    push();
+    fill(255, 255, 255);
+    textSize(12);
+    textFont();
+    textAlign(CENTER);
+    //text(" well played", width / 2, 35);
+    pop();
+
+    //Mars Surface
+    mars();
+
+    for (let marsRock of marsRocks) {
+      fill(123, 65, 40);
+      ellipse(marsRock.x, marsRock.y, marsRock.size);
+      marsRock.x = marsRock.x + marsRock.windSpeed;
+
+      if (marsRock.x > width) {
+        marsRock.x = 0;
+      }
+    }
+
+    for (let particle of particles) {
+      drawParticle(particle);
+      updateParticle(particle);
+    }
+    //mars mountains
+    triangle(0, 430, 0, 360, 180, 430);
+    triangle(width, 440, width, 360, 350, 440);
+
+    if (rocketLanded === true) {
+      rocket(
+        rocketSettings.x - 40 * rocketSettings.size,
+        // ^^^^ 40 * size is so that the rocket is
+        // ---- centered 40 is the width of size = 1
+        rocketSettings.y,
+        rocketSettings.size
+      );
+    }
+
+    if (keyIsPressed === true && keyCode === 32) {
+      rocketSettings.x = width / 2;
+      rocketSettings.y = 50;
+      rocketSettings.size = 0.7;
+      rocketSettings.velocity = 0.5;
+      rocketSettings.acceleration = 0.16;
+
+      fuel = 150;
+
+      gameState = "start";
+      isGameActive = true;
+    }
   }
-  console.log(gameState);
 }
