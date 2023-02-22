@@ -8,6 +8,7 @@ let isGameActive = true;
 let gameState = "start";
 let result;
 let rocketLanded;
+let landingY = 350;
 
 //-----Starry sky
 //      (inspired by Garrit's starry sky at:
@@ -223,6 +224,12 @@ function rocket(x, y, s) {
 //          Based on the one from garrit's lecture
 let particles = [];
 
+const particleSettings = {
+  acceleration: 0.99,
+  agingSpeed: 1,
+  deltaY: 125,
+};
+
 function createParticle(x, y) {
   const v = 0.2 + Math.random();
   const a = Math.random() * 2 * Math.PI;
@@ -242,8 +249,8 @@ function drawParticle(particle) {
 function updateParticle(particle) {
   particle.x = particle.x + Math.cos(particle.angle) * particle.velocity;
   particle.y = particle.y + Math.sin(particle.angle) * particle.velocity;
-  particle.velocity = particle.velocity * 0.99;
-  particle.life = particle.life + 1;
+  particle.velocity = particle.velocity * particleSettings.acceleration;
+  particle.life = particle.life + particleSettings.agingSpeed;
 
   if (particle.life > particle.maxLife) {
     const particleIndex = particles.indexOf(particle);
@@ -253,6 +260,7 @@ function updateParticle(particle) {
 
 //------Fuel
 let fuel = 150;
+let fuelUsageSpeed = 2;
 
 //------Game Over
 function gameOver() {
@@ -276,6 +284,10 @@ function gameWon() {
   text("YOU LANDED!", width / 2, height / 3);
   pop();
 }
+//
+//
+//
+//
 //
 //
 //
@@ -375,15 +387,19 @@ function draw() {
     fill(255, 255, 255);
     textSize(16);
     textFont();
-    //fuel
+    //fuel          divided by 1.5 so that it's 1-100% and not 1-150%
     text("fuel: " + Math.floor(fuel / 1.5) + "%", 50, 50);
-    //velocity
+    //velocity      times 20 so that it is somewhat relatable to real speeds
     text(
-      "velocity: " + Math.floor(rocketSettings.velocity * 20) + "km/h",
+      "velocity: " + Math.floor(rocketSettings.velocity * 20) + " km/h",
       50,
       75
     );
-    //text("altitude: " + Math.floor(rocketSettings.y), 50, 100);
+    text(
+      "altitude: " + Math.floor((rocketSettings.y - landingY) * -1) + " m",
+      50,
+      100
+    );
     pop();
 
     //Mars Surface
@@ -403,6 +419,7 @@ function draw() {
       drawParticle(particle);
       updateParticle(particle);
     }
+
     //mars mountains
     triangle(0, 430, 0, 360, 180, 430);
     triangle(width, 440, width, 360, 350, 440);
@@ -424,15 +441,21 @@ function draw() {
       rocketSettings.y = rocketSettings.y + rocketSettings.velocity;
       rocketSettings.velocity =
         rocketSettings.velocity + rocketSettings.acceleration;
+
       //ground stops rocket
-      if (rocketSettings.y > 350 && rocketSettings.velocity > 1.5) {
+      if (rocketSettings.y > landingY && rocketSettings.velocity > 1.5) {
         gameOver();
         result = "too bad, you crashed";
+
         //EXPLOSION EFFECT
+
         rocketLanded = false;
         isGameActive = false;
         gameState = "end";
-      } else if (rocketSettings.y > 350 && rocketSettings.velocity <= 1.5) {
+      } else if (
+        rocketSettings.y > landingY &&
+        rocketSettings.velocity <= 1.5
+      ) {
         gameWon();
         result = "great! you landed safely";
         rocketLanded = true;
@@ -440,21 +463,20 @@ function draw() {
         gameState = "end";
       }
       //Thrust mechanic
-      let thrustVelocity = 4;
-      //let thrustAcceleration = 5;
+      let thrustAcceleration = 0.4;
 
       if (keyIsDown(38)) {
-        //arrowUp = thurst
-        rocketSettings.velocity = rocketSettings.velocity - 0.4;
+        //arrowUp to thrust
+        rocketSettings.velocity = rocketSettings.velocity - thrustAcceleration;
         console.log(rocketSettings.y);
         console.log(rocketSettings.acceleration);
-        fuel = fuel - 2;
+        fuel = fuel - fuelUsageSpeed;
 
         //particles
         for (let i = 0; i < 200; i++) {
           let particle = createParticle(
             rocketSettings.x,
-            rocketSettings.y + 125
+            rocketSettings.y + particleSettings.deltaY
           );
           particles.push(particle);
         }
@@ -464,7 +486,7 @@ function draw() {
     rocket(
       rocketSettings.x - 40 * rocketSettings.size,
       // ^^^^ 40 * size is so that the rocket is
-      // ---- centered 40 is the width of size = 1
+      // ---- centered 40 is the width of size = 1 this is cus the size is 0.4
       rocketSettings.y,
       rocketSettings.size
     );
@@ -547,6 +569,7 @@ function draw() {
       );
     }
 
+    // resetting the variables that aren't consts & the game ofc
     if (keyIsPressed === true && keyCode === 32) {
       rocketSettings.x = width / 2;
       rocketSettings.y = 50;
