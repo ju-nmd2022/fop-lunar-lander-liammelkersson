@@ -6,6 +6,7 @@
 //----- Setup
 function setup() {
   createCanvas(750, 750);
+  frameRate(30);
 }
 
 //----- General game variables & game states
