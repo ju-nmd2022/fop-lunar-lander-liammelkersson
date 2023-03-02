@@ -3,12 +3,19 @@
 // for an assignment in the course Foundations of Programming.
 // Liam Melkersson. Jönköping University. 2023.
 
+//----- Setup
+function setup() {
+  createCanvas(750, 750);
+}
+
 //----- General game variables & game states
 let isGameActive = true;
 let gameState = "start";
 let result;
 let rocketLanded;
 let landingY = 350;
+const screenWidth = 750;
+const screenHeight = 750;
 
 //-----Starry sky
 //      (inspired by Garrit's starry sky at:
@@ -22,20 +29,59 @@ const starSettings = {
 
 for (let i = 0; i < starSettings.amount; i++) {
   const star = {
-    x: Math.floor(Math.random() * width),
-    y: Math.floor(Math.random() * height),
+    x: Math.floor(Math.random() * screenWidth),
+    y: Math.floor(Math.random() * screenHeight),
     size: Math.floor(Math.random() * starSettings.maxSize),
     alpha: Math.random(),
   };
   stars.push(star);
 }
 
+//------ Intro text
+function introText() {
+  //Game text
+  push();
+  fill(255, 255, 255);
+  textSize(50);
+  textFont();
+  textAlign(CENTER);
+  text("MARS LANDER", screenWidth / 2, screenHeight / 3);
+  pop();
+
+  //Instructions
+  push();
+  fill(255, 255, 255);
+  textSize(16);
+  textFont();
+  textAlign(CENTER);
+  text("press spacebar to start game", screenWidth / 2, screenHeight / 3 + 35);
+
+  fill(200, 200, 200);
+  textSize(14);
+  text(
+    "you have to land with an impact velocity of max 30km/h",
+    screenWidth / 2,
+    screenHeight / 3 - 160
+  );
+  text(
+    "don't run out of fuel, or the rocket will explode",
+    screenWidth / 2,
+    screenHeight / 3 - 175
+  );
+  text(
+    "controls: arrow-up = thrust, spacebar = restart",
+    screenWidth / 2,
+    screenHeight / 3 - 190
+  );
+  pop();
+}
+
 //-----Mars surface
 const marsSettings = {
   x: 0,
   y: 420,
-  marsWidth: width,
-  marsHeight: height,
+  marsscreenWidth: screenWidth,
+  marsscreenHeight: screenHeight,
   color: "#ad6242",
 };
 
@@ -45,12 +91,16 @@ function mars() {
   rect(
     marsSettings.x,
     marsSettings.y,
-    marsSettings.marsWidth,
-    marsSettings.marsHeight
+    marsSettings.marsscreenWidth,
+    marsSettings.marsscreenHeight
   );
-  fill("#a45820");
-  //   triangle(0, 420, 0, 360, 180, 420);
-  //   triangle(width, 430, width, 360, 350, 430);
+}
+
+function marsMountains() {
+  noStroke();
+  fill(123, 65, 40);
+  triangle(0, 430, 0, 360, 180, 430);
+  triangle(750, 440, 750, 360, 450, 440);
 }
 
 const marsRocks = [];
@@ -61,8 +111,8 @@ const marsRockSettings = {
 
 for (let i = 0; i < marsRockSettings.amount; i++) {
   const marsRock = {
-    x: Math.floor(Math.random() * width),
-    y: 420 + Math.floor(Math.random() * height),
+    x: Math.floor(Math.random() * screenWidth),
+    y: 420 + Math.floor(Math.random() * screenHeight),
     size: Math.floor(Math.random() * marsRockSettings.maxSize),
     windSpeed: 0.5,
   };
@@ -71,7 +121,7 @@ for (let i = 0; i < marsRockSettings.amount; i++) {
 
 //------Rocket
 let rocketSettings = {
-  x: width / 2,
+  x: screenWidth / 2,
   y: 50,
   size: 0.7,
   velocity: 0.5,
@@ -270,7 +320,7 @@ function gameOver() {
   textSize(50);
   textFont();
   textAlign(CENTER);
-  text("GAME OVER", width / 2, height / 3);
+  text("GAME OVER", screenWidth / 2, screenHeight / 3);
   pop();
 }
 
@@ -281,7 +331,7 @@ function gameWon() {
   textSize(50);
   textFont();
   textAlign(CENTER);
-  text("YOU LANDED!", width / 2, height / 3);
+  text("YOU LANDED!", screenWidth / 2, screenHeight / 3);
   pop();
 }
 //
@@ -295,6 +345,7 @@ function gameWon() {
 //DRAW FUNCTION
 function draw() {
   //game states
+
   if (gameState === "start") {
     //Starry Sky
     noStroke();
@@ -308,42 +359,6 @@ function draw() {
       star.alpha = star.alpha + alphaSpeed;
     }
 
-    //Game text
-    push();
-    fill(255, 255, 255);
-    textSize(50);
-    textFont();
-    textAlign(CENTER);
-    text("MARS LANDER", width / 2, height / 3);
-    pop();
-
-    //Instructions
-    push();
-    fill(255, 255, 255);
-    textSize(16);
-    textFont();
-    textAlign(CENTER);
-    text("press spacebar to start game", width / 2, height / 3 + 35);
-
-    fill(200, 200, 200);
-    textSize(10);
-    text(
-      "you have to land with an impact velocity of max 30km/h",
-      width / 2,
-      height / 3 + 160
-    );
-    text(
-      "don't run out of fuel, or the rocket will explode",
-      width / 2,
-      height / 3 + 175
-    );
-    text(
-      "controls: arrow-up = thrust, spacebar = restart",
-      width / 2,
-      height / 3 + 190
-    );
-    pop();
-
     //Mars Surface
     mars();
 
@@ -352,18 +367,18 @@ function draw() {
       ellipse(marsRock.x, marsRock.y, marsRock.size);
       marsRock.x = marsRock.x + marsRock.windSpeed;
 
-      if (marsRock.x > width) {
+      if (marsRock.x > screenWidth) {
         marsRock.x = 0;
       }
     }
+
+    introText();
 
     for (let particle of particles) {
       drawParticle(particle);
       updateParticle(particle);
     }
-    //mars mountains
-    triangle(0, 430, 0, 360, 180, 430);
-    triangle(width, 440, width, 360, 350, 440);
+    marsMountains();
 
     if (keyIsPressed === true && keyCode === 32) {
       gameState = "gameplay";
@@ -410,7 +425,7 @@ function draw() {
       ellipse(marsRock.x, marsRock.y, marsRock.size);
       marsRock.x = marsRock.x + marsRock.windSpeed;
 
-      if (marsRock.x > width) {
+      if (marsRock.x > screenWidth) {
         marsRock.x = 0;
       }
     }
@@ -420,9 +435,7 @@ function draw() {
       updateParticle(particle);
     }
 
-    //mars mountains
-    triangle(0, 430, 0, 360, 180, 430);
-    triangle(width, 440, width, 360, 350, 440);
+    marsMountains();
 
     //shadow
     push();
@@ -486,7 +499,7 @@ function draw() {
     rocket(
       rocketSettings.x - 40 * rocketSettings.size,
       // ^^^^ 40 * size is so that the rocket is
-      // ---- centered 40 is the width of size = 1 this is cus the size is 0.4
+      // ---- centered 40 is the screenWidth of size = 1 this is cus the size is 0.4
       rocketSettings.y,
       rocketSettings.size
     );
@@ -517,7 +530,7 @@ function draw() {
     textSize(50);
     textFont();
     textAlign(CENTER);
-    text("MARS LANDER", width / 2, height / 3);
+    text("MARS LANDER", screenWidth / 2, screenHeight / 3);
     pop();
 
     //press any button to start game
@@ -526,7 +539,7 @@ function draw() {
     textSize(16);
     textFont();
     textAlign(CENTER);
-    text(result, width / 2, height / 3 + 35);
+    text(result, screenWidth / 2, screenHeight / 3 + 35);
     pop();
 
     //controls
@@ -535,7 +548,7 @@ function draw() {
     textSize(12);
     textFont();
     textAlign(CENTER);
-    //text(" well played", width / 2, 35);
+    //text(" well played", screenWidth / 2, 35);
     pop();
 
     //Mars Surface
@@ -546,7 +559,7 @@ function draw() {
       ellipse(marsRock.x, marsRock.y, marsRock.size);
       marsRock.x = marsRock.x + marsRock.windSpeed;
 
-      if (marsRock.x > width) {
+      if (marsRock.x > screenWidth) {
         marsRock.x = 0;
       }
     }
@@ -555,15 +568,13 @@ function draw() {
       drawParticle(particle);
       updateParticle(particle);
     }
-    //mars mountains
-    triangle(0, 430, 0, 360, 180, 430);
-    triangle(width, 440, width, 360, 350, 440);
+    marsMountains();
 
     if (rocketLanded === true) {
       rocket(
         rocketSettings.x - 40 * rocketSettings.size,
         // ^^^^ 40 * size is so that the rocket is
-        // ---- centered 40 is the width of size = 1
+        // ---- centered 40 is the screenWidth of size = 1
         rocketSettings.y,
         rocketSettings.size
       );
@@ -571,7 +582,7 @@ function draw() {
 
     // resetting the variables that aren't consts & the game ofc
     if (keyIsPressed === true && keyCode === 32) {
-      rocketSettings.x = width / 2;
+      rocketSettings.x = screenWidth / 2;
       rocketSettings.y = 50;
       rocketSettings.size = 0.7;
       rocketSettings.velocity = 0.5;
